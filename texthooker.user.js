@@ -86,6 +86,11 @@ function setUpDoubleClickEdit() {
   // listen for double click
   document.addEventListener('dblclick', (e) => {
     if (e.target.tagName == 'SPAN') {
+      if (!e.target.parentElement.className == 'textline') return;
+
+      // check not dragger
+      if (e.target.classList.contains('dragger')) return;
+
       // edit text
       e.target.contentEditable = true;
       e.target.focus();
