@@ -3,7 +3,7 @@
 // @match       http*://*.*.*/texthooker.html
 // @match       file:///*texthooker.html
 // @grant       none
-// @version     1.0
+// @version     1.01
 // @author      Zetta#3033, Marv
 // @description Inserts text into a texthooker page, for use with this textractor plugin https://github.com/sadolit/textractor-websocket
 // @grant       GM_addStyle
