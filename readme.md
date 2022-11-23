@@ -1,6 +1,6 @@
 # Texthooker Websocket Userscript
 
-A userscript intended for use on the [Anacreon texthooking page](https://anacreondjt.gitlab.io/texthooker.html) but may be compatible with others. It allows for use with the [Textractor Websocket](https://github.com/sadolit/textractor-websocket) plugin allowing for instantaneous text inserting without the downsides of the slow and unreliable Clipboard Inserter extension while also adding enhancements to the texthooker page.
+A userscript intended for text inserting on the [Anacreon texthooking page](https://anacreondjt.gitlab.io/texthooker.html) (online and offline, if locally saved). It allows for use with the [Textractor Websocket](https://github.com/sadolit/textractor-websocket) plugin allowing for instantaneous text inserting due to the way sockets work. In contrast, a clipboard inserter extension is quite janky in having to check your clipboard many times a second, leading to delays in text appearing, issues with skipped text, polluting your clipboard, and making copying text annoying when activated.
 
 ## Usage
 
@@ -9,6 +9,7 @@ A userscript intended for use on the [Anacreon texthooking page](https://anacreo
 - Start your visual novel
 - After there are lines present in Textractor, click "Reconnect" on the texthooking page if it is not connected
 - Unpause the timer
+- Lines will instantly appear on your texthooker page when they are extracted by Textractor
 
 ## Additional Features
 
