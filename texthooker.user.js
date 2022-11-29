@@ -3,7 +3,7 @@
 // @match       http*://*.*.*/texthooker.html
 // @match       file:///*texthooker.html
 // @grant       none
-// @version     1.1
+// @version     1.11
 // @author      Zetta#3033, Marv
 // @description Inserts text into a texthooker page, for use with this textractor plugin https://github.com/sadolit/textractor-websocket
 // @grant       GM_addStyle
@@ -285,7 +285,7 @@ function setUpAfkTimer() {
   const afkTimerElem = elementFromHTML(/* html */ `
 <label class="menuitem">
   <input type="checkbox">
-  Enable AFK Timer
+  Enable AFK Timer (60s)
 </label>`);
 
   if (afkTimerEnabled) {
