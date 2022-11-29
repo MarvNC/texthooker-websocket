@@ -3,7 +3,7 @@
 // @match       http*://*.*.*/texthooker.html
 // @match       file:///*texthooker.html
 // @grant       none
-// @version     1.01
+// @version     1.1
 // @author      Zetta#3033, Marv
 // @description Inserts text into a texthooker page, for use with this textractor plugin https://github.com/sadolit/textractor-websocket
 // @grant       GM_addStyle
@@ -15,6 +15,9 @@ let lastActivityTime = 0;
 let lastFlashTime = 0;
 const flashDuration = 500;
 const flashInterval = 500;
+
+let afkTimerEnabled = true;
+let showTimer = true;
 
 let socket = null;
 let wsStatusElem = null;
@@ -72,12 +75,9 @@ ${originalTimerSelector} {
 
   setUpDoubleClickEdit();
 
-  // sleep on inactivity
-  setInterval(() => {
-    if (lastActivityTime + sleepTime < Date.now() && inserting === true) {
-      timerElem.click();
-    }
-  }, 1000);
+  setUpAfkTimer();
+
+  setUpShowTimer();
 
   setUpChangeTimer();
 })();
@@ -141,9 +141,13 @@ function updateTimerElem() {
   const { paused, time, speed } = getTimerInfo();
   inserting = paused !== 'PAUSED';
   const status = inserting ? 'INSERTING' : 'PAUSED';
-  timerElem.innerHTML = /* html */ `
-  <span class="timerText">${time} ${inserting ? '' : speed} </span>
-  <span class="${status}">${status}</span>`;
+  let newHTML = '';
+  if (showTimer) {
+    newHTML = /* html */ `
+  <span class="timerText">${time} ${inserting ? '' : speed} </span>`;
+  }
+  newHTML += /* html */ `<span class="${status}">${status}</span>`;
+  timerElem.innerHTML = newHTML;
 }
 
 function getTimerInfo() {
@@ -191,6 +195,7 @@ function updateStatus(connected) {
 }
 
 function connect() {
+  updateStatus(false);
   socket = new WebSocket('ws://localhost:6677/');
   socket.onopen = (e) => {
     updateStatus(true);
@@ -228,19 +233,34 @@ function addText(text) {
   document.body.insertBefore(textNode, null);
 }
 
-function setUpChangeTimer() {
+function addMenuElement(newElem) {
   const menu = document.getElementById('menu');
-  const changeTimerElem = document.createElement('div');
-
-  menu.appendChild(changeTimerElem);
-
-  changeTimerElem.className = 'icon-clock menuitem';
-  changeTimerElem.style.display = 'none';
-  changeTimerElem.innerText = 'Set Timer';
+  menu.appendChild(newElem);
+  newElem.style.display = 'none';
 
   const br = document.createElement('br');
   br.style.display = 'none';
   menu.appendChild(br);
+
+  let expanded = false;
+  menu.querySelector('span[title="Toggle menu"').addEventListener('click', async () => {
+    expanded = !expanded;
+    if (expanded) {
+      newElem.style.display = 'inline-block';
+      br.style.display = 'block';
+    } else {
+      newElem.style.display = 'none';
+      br.style.display = 'none';
+    }
+  });
+}
+
+function setUpChangeTimer() {
+  const changeTimerElem = document.createElement('div');
+  addMenuElement(changeTimerElem);
+
+  changeTimerElem.className = 'icon-clock menuitem';
+  changeTimerElem.innerText = 'Set Timer';
 
   changeTimerElem.onclick = () => {
     const currentTime = getTimerInfo().time;
@@ -254,16 +274,75 @@ function setUpChangeTimer() {
       location.reload();
     }
   };
+}
 
-  let expanded = false;
-  menu.querySelector('span[title="Toggle menu"').addEventListener('click', async () => {
-    expanded = !expanded;
-    if (expanded) {
-      changeTimerElem.style.display = 'inline-block';
-      br.style.display = 'block';
-    } else {
-      changeTimerElem.style.display = 'none';
-      br.style.display = 'none';
-    }
+function setUpAfkTimer() {
+  // default to true if unset
+  afkTimerEnabled = localStorage.getItem('afkTimerEnabled') != 'false';
+  console.log(`Afk timer enabled: ${afkTimerEnabled}`);
+
+  // add menu element
+  const afkTimerElem = elementFromHTML(/* html */ `
+<label class="menuitem">
+  <input type="checkbox">
+  Enable AFK Timer
+</label>`);
+
+  if (afkTimerEnabled) {
+    afkTimerElem.querySelector('input').checked = true;
+  }
+
+  addMenuElement(afkTimerElem);
+
+  afkTimerElem.querySelector('input').addEventListener('change', (e) => {
+    const checked = e.target.checked;
+    afkTimerEnabled = checked;
+    localStorage.setItem('afkTimerEnabled', checked);
+    console.log('afkTimerEnabled', afkTimerEnabled);
   });
+
+  // sleep on inactivity
+  setInterval(() => {
+    if (lastActivityTime + sleepTime < Date.now() && inserting === true) {
+      if (afkTimerEnabled) {
+        timerElem.click();
+      }
+    }
+  }, 1000);
+}
+
+function setUpShowTimer() {
+  // default to true if unset
+  showTimer = localStorage.getItem('showTimerEnabled') != 'false';
+  console.log(`Show timer enabled: ${showTimer}`);
+
+  updateTimerElem();
+
+  // add menu element
+  const showTimerElem = elementFromHTML(/* html */ `
+<label class="menuitem">
+  <input type="checkbox">
+  Show Timer
+</label>`);
+
+  if (showTimer) {
+    showTimerElem.querySelector('input').checked = true;
+  }
+
+  addMenuElement(showTimerElem);
+
+  showTimerElem.querySelector('input').addEventListener('change', (e) => {
+    const checked = e.target.checked;
+    showTimer = checked;
+    localStorage.setItem('showTimerEnabled', checked);
+    console.log('showTimerEnabled', showTimer);
+    updateTimerElem();
+  });
+}
+
+function elementFromHTML(html) {
+  const template = document.createElement('template');
+  html = html.trim();
+  template.innerHTML = html;
+  return template.content.firstChild;
 }
