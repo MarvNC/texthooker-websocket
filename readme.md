@@ -21,6 +21,7 @@ A userscript intended for text inserting on the [Anacreon texthooking page](http
 - Hide timer and characters/hour speed while the timer is paused
 - Easy copying of character count and time information for pasting to spreadsheets (by clicking on the character/line count)
 - Flash screen if the timer is paused and new lines are inserted (to prevent you forgetting to unpause the timer)
-- Auto pause the timer after 60 seconds AFK
-- Easily set/adjust the current timer (Press the hamburger menu, first option)
+- Auto pause the timer after 60 seconds AFK (can disable in the hamburger menu)
+- Easily set/adjust the current timer (in the hamburger menu)
 - Pause timer on page load
+- Hide timer (toggle in the hamburger menu)
