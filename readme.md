@@ -7,7 +7,7 @@
 ## ~~Usage~~
 
 - ~~Install the [Textractor Websocket](https://github.com/sadolit/textractor-websocket) plugin in Textractor~~
-- ~~[Install the userscript](https://github.com/MarvNC/texthooker-websocket/raw/master/texthooker.user.js) (I recommend using ~~[Violentmonkey](https://violentmonkey.github.io/) to manage userscripts)
+- ~~[Install the userscript](https://github.com/MarvNC/texthooker-websocket/raw/master/texthooker.user.js) (I recommend using [Violentmonkey](https://violentmonkey.github.io/) to manage userscripts)~~
 - ~~Start your visual novel~~
 - ~~After there are lines present in Textractor, click "Reconnect" on the texthooking page if it is not connected~~
 - ~~Unpause the timer~~
